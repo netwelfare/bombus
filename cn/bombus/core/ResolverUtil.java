@@ -317,7 +317,6 @@ public class ResolverUtil<T>
 						BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 						for (String line; (line = reader.readLine()) != null;)
 						{
-							//log.debug("Reader entry: " + line);
 							if (isRelevantResource(line))
 							{
 								children.add(line);
@@ -451,7 +450,6 @@ public class ResolverUtil<T>
 	 */
 	protected URL findJarForResource(URL url, String path) throws MalformedURLException
 	{
-		//log.debug("Find JAR URL: " + url);
 
 		// If the file part of the URL is itself a URL, then that URL probably
 		// points to the JAR
@@ -460,7 +458,7 @@ public class ResolverUtil<T>
 			for (;;)
 			{
 				url = new URL(url.getFile());
-				//log.debug("Inner URL: " + url);
+
 			}
 		}
 		catch (MalformedURLException e)
@@ -474,11 +472,11 @@ public class ResolverUtil<T>
 		if (index >= 0)
 		{
 			jarUrl.setLength(index + 4);
-			//log.debug("Extracted JAR URL: " + jarUrl);
+
 		}
 		else
 		{
-			//log.debug("Not a JAR: " + jarUrl);
+
 			return null;
 		}
 

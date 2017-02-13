@@ -29,17 +29,20 @@ import cn.bombus.core.sql.node.WhereSqlNode;
 import cn.bombus.core.sql.result.ResultSetType;
 import cn.bombus.core.xml.XNode;
 
-public class XMLStatementBuilder extends BaseBuilder {
+public class XMLStatementBuilder extends BaseBuilder
+{
 	private MapperBuilderAssistant builderAssistant;
 	private XNode context;
 
-	public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode context) {
+	public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode context)
+	{
 		super(configuration);
 		this.builderAssistant = builderAssistant;
 		this.context = context;
 	}
 
-	public void parseStatementNode() {
+	public void parseStatementNode()
+	{
 		String id = context.getStringAttribute("id");
 		Integer fetchSize = null;
 		Integer timeout = null;
@@ -87,23 +90,30 @@ public class XMLStatementBuilder extends BaseBuilder {
 				keyGenerator, keyProperty);
 	}
 
-	public String getStatementIdWithNameSpace() {
+	public String getStatementIdWithNameSpace()
+	{
 		return builderAssistant.applyCurrentNamespace(context.getStringAttribute("id"));
 	}
 
-	private List<SqlNode> parseDynamicTags(XNode node) {
+	private List<SqlNode> parseDynamicTags(XNode node)
+	{
 		List<SqlNode> contents = new ArrayList<SqlNode>();
 		NodeList children = node.getNode().getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
+		for (int i = 0; i < children.getLength(); i++)
+		{
 			XNode child = node.newXNode(children.item(i));
 			String nodeName = child.getNode().getNodeName();
 			if (child.getNode().getNodeType() == Node.CDATA_SECTION_NODE
-					|| child.getNode().getNodeType() == Node.TEXT_NODE) {
+					|| child.getNode().getNodeType() == Node.TEXT_NODE)
+			{
 				String data = child.getStringBody("");
 				contents.add(new TextSqlNode(data));
-			} else {
+			}
+			else
+			{
 				NodeHandler handler = nodeHandlers.get(nodeName);
-				if (handler == null) {
+				if (handler == null)
+				{
 					throw new BuilderException("Unknown element <" + nodeName + "> in SQL statement.");
 				}
 				handler.handleNode(child, contents);
@@ -130,12 +140,15 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	};
 
-	private interface NodeHandler {
+	private interface NodeHandler
+	{
 		void handleNode(XNode nodeToHandle, List<SqlNode> targetContents);
 	}
 
-	private class SelectKeyHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class SelectKeyHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			XNode parent = nodeToHandle.getParent();
 			String id = parent.getStringAttribute("id") + SelectKeyGenerator.SELECT_KEY_SUFFIX;
 			String resultType = nodeToHandle.getStringAttribute("resultType");
@@ -174,35 +187,45 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	}
 
-	private class IncludeNodeHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class IncludeNodeHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			String refid = nodeToHandle.getStringAttribute("refid");
 			refid = builderAssistant.applyCurrentNamespace(refid);
-			try {
+			try
+			{
 				XNode includeNode = configuration.getSqlFragments().get(refid);
-				if (includeNode == null) {
+				if (includeNode == null)
+				{
 					String nsrefid = builderAssistant.applyCurrentNamespace(refid);
 					includeNode = configuration.getSqlFragments().get(nsrefid);
-					if (includeNode == null) {
+					if (includeNode == null)
+					{
 						throw new IncompleteStatementException(
 								"Could not find SQL statement to include with refid '" + refid + "'");
 					}
 				}
 				MixedSqlNode mixedSqlNode = new MixedSqlNode(contents(includeNode));
 				targetContents.add(mixedSqlNode);
-			} catch (IllegalArgumentException e) {
+			}
+			catch (IllegalArgumentException e)
+			{
 				throw new IncompleteStatementException(
 						"Could not find SQL statement to include with refid '" + refid + "'", e);
 			}
 		}
 
-		private List<SqlNode> contents(XNode includeNode) {
+		private List<SqlNode> contents(XNode includeNode)
+		{
 			return parseDynamicTags(includeNode);
 		}
 	}
 
-	private class TrimHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class TrimHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List<SqlNode> contents = parseDynamicTags(nodeToHandle);
 			MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
 			String prefix = nodeToHandle.getStringAttribute("prefix");
@@ -215,8 +238,10 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	}
 
-	private class WhereHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class WhereHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List<SqlNode> contents = parseDynamicTags(nodeToHandle);
 			MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
 			WhereSqlNode where = new WhereSqlNode(configuration, mixedSqlNode);
@@ -224,8 +249,10 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	}
 
-	private class SetHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class SetHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List<SqlNode> contents = parseDynamicTags(nodeToHandle);
 			MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
 			SetSqlNode set = new SetSqlNode(configuration, mixedSqlNode);
@@ -233,8 +260,10 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	}
 
-	private class ForEachHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class ForEachHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List<SqlNode> contents = parseDynamicTags(nodeToHandle);
 			MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
 			String collection = nodeToHandle.getStringAttribute("collection");
@@ -249,8 +278,10 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	}
 
-	private class IfHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class IfHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List<SqlNode> contents = parseDynamicTags(nodeToHandle);
 			MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
 			String test = nodeToHandle.getStringAttribute("test");
@@ -259,16 +290,20 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 	}
 
-	private class OtherwiseHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class OtherwiseHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List<SqlNode> contents = parseDynamicTags(nodeToHandle);
 			MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
 			targetContents.add(mixedSqlNode);
 		}
 	}
 
-	private class ChooseHandler implements NodeHandler {
-		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+	private class ChooseHandler implements NodeHandler
+	{
+		public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents)
+		{
 			List whenSqlNodes = new ArrayList<SqlNode>();
 			List<SqlNode> otherwiseSqlNodes = new ArrayList<SqlNode>();
 			handleWhenOtherwiseNodes(nodeToHandle, whenSqlNodes, otherwiseSqlNodes);
@@ -278,24 +313,33 @@ public class XMLStatementBuilder extends BaseBuilder {
 		}
 
 		private void handleWhenOtherwiseNodes(XNode chooseSqlNode, List<SqlNode> ifSqlNodes,
-				List<SqlNode> defaultSqlNodes) {
+				List<SqlNode> defaultSqlNodes)
+		{
 			List<XNode> children = chooseSqlNode.getChildren();
-			for (XNode child : children) {
+			for (XNode child : children)
+			{
 				String nodeName = child.getNode().getNodeName();
 				NodeHandler handler = nodeHandlers.get(nodeName);
-				if (handler instanceof IfHandler) {
+				if (handler instanceof IfHandler)
+				{
 					handler.handleNode(child, ifSqlNodes);
-				} else if (handler instanceof OtherwiseHandler) {
+				}
+				else if (handler instanceof OtherwiseHandler)
+				{
 					handler.handleNode(child, defaultSqlNodes);
 				}
 			}
 		}
 
-		private SqlNode getDefaultSqlNode(List<SqlNode> defaultSqlNodes) {
+		private SqlNode getDefaultSqlNode(List<SqlNode> defaultSqlNodes)
+		{
 			SqlNode defaultSqlNode = null;
-			if (defaultSqlNodes.size() == 1) {
+			if (defaultSqlNodes.size() == 1)
+			{
 				defaultSqlNode = defaultSqlNodes.get(0);
-			} else if (defaultSqlNodes.size() > 1) {
+			}
+			else if (defaultSqlNodes.size() > 1)
+			{
 				throw new BuilderException("Too many default (otherwise) elements in choose statement.");
 			}
 			return defaultSqlNode;

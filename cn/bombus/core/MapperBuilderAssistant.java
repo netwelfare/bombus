@@ -1,7 +1,6 @@
 package cn.bombus.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -22,28 +21,33 @@ import cn.bombus.core.sql.result.ResultSetType;
 import cn.bombus.core.sql.type.JdbcType;
 import cn.bombus.core.sql.type.TypeHandler;
 
-public class MapperBuilderAssistant extends BaseBuilder {
+public class MapperBuilderAssistant extends BaseBuilder
+{
 
 	private String currentNamespace;
 	private String resource;
 	// private Cache currentCache;
 
-	public MapperBuilderAssistant(Configuration configuration, String resource) {
+	public MapperBuilderAssistant(Configuration configuration, String resource)
+	{
 		super(configuration);
-		// ErrorContext.instance().resource(resource);
 		this.resource = resource;
 	}
 
-	public String getCurrentNamespace() {
+	public String getCurrentNamespace()
+	{
 		return currentNamespace;
 	}
 
-	public void setCurrentNamespace(String currentNamespace) {
-		if (currentNamespace == null) {
+	public void setCurrentNamespace(String currentNamespace)
+	{
+		if (currentNamespace == null)
+		{
 			throw new BuilderException("The mapper element requires a namespace attribute to be specified.");
 		}
 
-		if (this.currentNamespace != null && !this.currentNamespace.equals(currentNamespace)) {
+		if (this.currentNamespace != null && !this.currentNamespace.equals(currentNamespace))
+		{
 			throw new BuilderException(
 					"Wrong namespace. Expected '" + this.currentNamespace + "' but found '" + currentNamespace + "'.");
 		}
@@ -51,18 +55,24 @@ public class MapperBuilderAssistant extends BaseBuilder {
 		this.currentNamespace = currentNamespace;
 	}
 
-	public String applyCurrentNamespace(String base) {
+	public String applyCurrentNamespace(String base)
+	{
 		if (base == null)
+		{
 			return null;
+		}
 		// is it qualified with this or other namespace yet?
 		if (base.contains("."))
+		{
 			return base;
+		}
 		return currentNamespace + "." + base;
 	}
 
 	public ParameterMapping buildParameterMapping(Class<?> parameterType, String property, Class<?> javaType,
 			JdbcType jdbcType, String resultMap, ParameterMode parameterMode, Class<? extends TypeHandler> typeHandler,
-			Integer numericScale) {
+			Integer numericScale)
+	{
 		resultMap = applyCurrentNamespace(resultMap);
 
 		// Class parameterType = parameterMapBuilder.type();
@@ -78,49 +88,51 @@ public class MapperBuilderAssistant extends BaseBuilder {
 		return builder.build();
 	}
 
-//	public ResultMap addResultMap(String id, Class<?> type, String extend, Discriminator discriminator,
-//			List<ResultMapping> resultMappings) {
-//		id = applyCurrentNamespace(id);
-//		extend = applyCurrentNamespace(extend);
-//
-//		ResultMap.Builder resultMapBuilder = new ResultMap.Builder(configuration, id, type, resultMappings);
-//		if (extend != null) {
-//			ResultMap resultMap = configuration.getResultMap(extend);
-//			resultMappings.addAll(resultMap.getResultMappings());
-//		}
-//		resultMapBuilder.discriminator(discriminator);
-//		ResultMap resultMap = resultMapBuilder.build();
-//		configuration.addResultMap(resultMap);
-//		return resultMap;
-//	}
+	//	public ResultMap addResultMap(String id, Class<?> type, String extend, Discriminator discriminator,
+	//			List<ResultMapping> resultMappings) {
+	//		id = applyCurrentNamespace(id);
+	//		extend = applyCurrentNamespace(extend);
+	//
+	//		ResultMap.Builder resultMapBuilder = new ResultMap.Builder(configuration, id, type, resultMappings);
+	//		if (extend != null) {
+	//			ResultMap resultMap = configuration.getResultMap(extend);
+	//			resultMappings.addAll(resultMap.getResultMappings());
+	//		}
+	//		resultMapBuilder.discriminator(discriminator);
+	//		ResultMap resultMap = resultMapBuilder.build();
+	//		configuration.addResultMap(resultMap);
+	//		return resultMap;
+	//	}
 
 	public ResultMapping buildResultMapping(Class<?> resultType, String property, String column, Class<?> javaType,
 			JdbcType jdbcType, String nestedSelect, String nestedResultMap, Class<? extends TypeHandler> typeHandler,
-			List<ResultFlag> flags) {
+			List<ResultFlag> flags)
+	{
 		ResultMapping resultMapping = assembleResultMapping(resultType, property, column, javaType, jdbcType,
 				nestedSelect, nestedResultMap, typeHandler, flags);
 		return resultMapping;
 	}
 
-//	public Discriminator buildDiscriminator(Class<?> resultType, String column, Class<?> javaType, JdbcType jdbcType,
-//			Class<? extends TypeHandler> typeHandler, Map<String, String> discriminatorMap) {
-//		ResultMapping resultMapping = assembleResultMapping(resultType, null, column, javaType, jdbcType, null, null,
-//				typeHandler, new ArrayList<ResultFlag>());
-//		Map<String, String> namespaceDiscriminatorMap = new HashMap<String, String>();
-//		for (Map.Entry<String, String> e : discriminatorMap.entrySet()) {
-//			String resultMap = e.getValue();
-//			resultMap = applyCurrentNamespace(resultMap);
-//			namespaceDiscriminatorMap.put(e.getKey(), resultMap);
-//		}
-//		Discriminator.Builder discriminatorBuilder = new Discriminator.Builder(configuration, resultMapping,
-//				namespaceDiscriminatorMap);
-//		return discriminatorBuilder.build();
-//	}
+	//	public Discriminator buildDiscriminator(Class<?> resultType, String column, Class<?> javaType, JdbcType jdbcType,
+	//			Class<? extends TypeHandler> typeHandler, Map<String, String> discriminatorMap) {
+	//		ResultMapping resultMapping = assembleResultMapping(resultType, null, column, javaType, jdbcType, null, null,
+	//				typeHandler, new ArrayList<ResultFlag>());
+	//		Map<String, String> namespaceDiscriminatorMap = new HashMap<String, String>();
+	//		for (Map.Entry<String, String> e : discriminatorMap.entrySet()) {
+	//			String resultMap = e.getValue();
+	//			resultMap = applyCurrentNamespace(resultMap);
+	//			namespaceDiscriminatorMap.put(e.getKey(), resultMap);
+	//		}
+	//		Discriminator.Builder discriminatorBuilder = new Discriminator.Builder(configuration, resultMapping,
+	//				namespaceDiscriminatorMap);
+	//		return discriminatorBuilder.build();
+	//	}
 
 	public MappedStatement addMappedStatement(String id, SqlSource sqlSource, StatementType statementType,
 			SqlCommandType sqlCommandType, Integer fetchSize, Integer timeout, String parameterMap,
 			Class<?> parameterType, String resultMap, Class<?> resultType, ResultSetType resultSetType,
-			boolean flushCache, boolean useCache, KeyGenerator keyGenerator, String keyProperty) {
+			boolean flushCache, boolean useCache, KeyGenerator keyGenerator, String keyProperty)
+	{
 		id = applyCurrentNamespace(id);
 		boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 
@@ -142,7 +154,8 @@ public class MapperBuilderAssistant extends BaseBuilder {
 		return statement;
 	}
 
-	private <T> T valueOrDefault(T value, T defaultValue) {
+	private <T> T valueOrDefault(T value, T defaultValue)
+	{
 		return value == null ? defaultValue : value;
 	}
 
@@ -158,16 +171,23 @@ public class MapperBuilderAssistant extends BaseBuilder {
 	// }
 
 	private void setStatementParameterMap(String parameterMap, Class<?> parameterTypeClass,
-			MappedStatement.Builder statementBuilder) {
+			MappedStatement.Builder statementBuilder)
+	{
 		parameterMap = applyCurrentNamespace(parameterMap);
 
-		if (parameterMap != null) {
-			try {
+		if (parameterMap != null)
+		{
+			try
+			{
 				statementBuilder.parameterMap(configuration.getParameterMap(parameterMap));
-			} catch (IllegalArgumentException e) {
+			}
+			catch (IllegalArgumentException e)
+			{
 				throw new IncompleteStatementException("Could not find parameter map " + parameterMap, e);
 			}
-		} else if (parameterTypeClass != null) {
+		}
+		else if (parameterTypeClass != null)
+		{
 			List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
 			ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(configuration,
 					statementBuilder.id() + "-Inline", parameterTypeClass, parameterMappings);
@@ -176,20 +196,28 @@ public class MapperBuilderAssistant extends BaseBuilder {
 	}
 
 	private void setStatementResultMap(String resultMap, Class<?> resultType, ResultSetType resultSetType,
-			MappedStatement.Builder statementBuilder) {
+			MappedStatement.Builder statementBuilder)
+	{
 		resultMap = applyCurrentNamespace(resultMap);
 
 		List<ResultMap> resultMaps = new ArrayList<ResultMap>();
-		if (resultMap != null) {
+		if (resultMap != null)
+		{
 			String[] resultMapNames = resultMap.split(",");
-			for (String resultMapName : resultMapNames) {
-				try {
+			for (String resultMapName : resultMapNames)
+			{
+				try
+				{
 					resultMaps.add(configuration.getResultMap(resultMapName.trim()));
-				} catch (IllegalArgumentException e) {
+				}
+				catch (IllegalArgumentException e)
+				{
 					throw new IncompleteStatementException("Could not find result map " + resultMapName, e);
 				}
 			}
-		} else if (resultType != null) {
+		}
+		else if (resultType != null)
+		{
 			ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(configuration,
 					statementBuilder.id() + "-Inline", resultType, new ArrayList<ResultMapping>());
 			resultMaps.add(inlineResultMapBuilder.build());
@@ -201,14 +229,16 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
 	private ResultMapping assembleResultMapping(Class<?> resultType, String property, String column, Class<?> javaType,
 			JdbcType jdbcType, String nestedSelect, String nestedResultMap, Class<? extends TypeHandler> typeHandler,
-			List<ResultFlag> flags) {
+			List<ResultFlag> flags)
+	{
 		// Class resultType = resultMapBuilder.type();
 		nestedResultMap = applyCurrentNamespace(nestedResultMap);
 		Class<?> javaTypeClass = resolveResultJavaType(resultType, property, javaType);
 		TypeHandler typeHandlerInstance = (TypeHandler) resolveInstance(typeHandler);
 
 		List<ResultMapping> composites = parseCompositeColumnName(column);
-		if (composites.size() > 0) {
+		if (composites.size() > 0)
+		{
 			ResultMapping first = composites.get(0);
 			column = first.getColumn();
 		}
@@ -224,12 +254,16 @@ public class MapperBuilderAssistant extends BaseBuilder {
 		return builder.build();
 	}
 
-	private List<ResultMapping> parseCompositeColumnName(String columnName) {
+	private List<ResultMapping> parseCompositeColumnName(String columnName)
+	{
 		List<ResultMapping> composites = new ArrayList<ResultMapping>();
-		if (columnName != null) {
-			if (columnName.indexOf('=') > -1 || columnName.indexOf(',') > -1) {
+		if (columnName != null)
+		{
+			if (columnName.indexOf('=') > -1 || columnName.indexOf(',') > -1)
+			{
 				StringTokenizer parser = new StringTokenizer(columnName, "{}=, ", false);
-				while (parser.hasMoreTokens()) {
+				while (parser.hasMoreTokens())
+				{
 					String property = parser.nextToken();
 					String column = parser.nextToken();
 					// ResultMapping.Builder complexBuilder = new
@@ -242,41 +276,56 @@ public class MapperBuilderAssistant extends BaseBuilder {
 		return composites;
 	}
 
-	private Class<?> resolveResultJavaType(Class<?> resultType, String property, Class<?> javaType) {
-		if (javaType == null && property != null) {
-			try {
+	private Class<?> resolveResultJavaType(Class<?> resultType, String property, Class<?> javaType)
+	{
+		if (javaType == null && property != null)
+		{
+			try
+			{
 				MetaClass metaResultType = MetaClass.forClass(resultType);
 				javaType = metaResultType.getSetterType(property);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				// ignore, following null check statement will deal with the
 				// situation
 			}
 		}
-		if (javaType == null) {
+		if (javaType == null)
+		{
 			javaType = Object.class;
 		}
 		return javaType;
 	}
 
 	private Class<?> resolveParameterJavaType(Class<?> resultType, String property, Class<?> javaType,
-			JdbcType jdbcType) {
-		if (javaType == null) {
-			if (JdbcType.CURSOR.equals(jdbcType)) {
+			JdbcType jdbcType)
+	{
+		if (javaType == null)
+		{
+			if (JdbcType.CURSOR.equals(jdbcType))
+			{
 				javaType = java.sql.ResultSet.class;
-			} else if (Map.class.isAssignableFrom(resultType)) {
+			}
+			else if (Map.class.isAssignableFrom(resultType))
+			{
 				javaType = Object.class;
-			} else {
+			}
+			else
+			{
 				MetaClass metaResultType = MetaClass.forClass(resultType);
 				javaType = metaResultType.getGetterType(property);
 			}
 		}
-		if (javaType == null) {
+		if (javaType == null)
+		{
 			javaType = Object.class;
 		}
 		return javaType;
 	}
 
-	public ParameterMap addParameterMap(String id, Class<?> parameterClass, List<ParameterMapping> parameterMappings) {
+	public ParameterMap addParameterMap(String id, Class<?> parameterClass, List<ParameterMapping> parameterMappings)
+	{
 		id = applyCurrentNamespace(id);
 		ParameterMap.Builder parameterMapBuilder = new ParameterMap.Builder(configuration, id, parameterClass,
 				parameterMappings);
