@@ -13,15 +13,16 @@ import java.util.Set;
 
 import cn.bombus.core.ResolverUtil;
 import cn.bombus.core.Resources;
-import cn.bombus.core.ResolverUtil.IsA;
 import cn.bombus.core.annotation.Alias;
 import cn.bombus.core.exception.TypeException;
 
-public class TypeAliasRegistry {
+public class TypeAliasRegistry
+{
 
 	private final HashMap<String, Class> TYPE_ALIASES = new HashMap<String, Class>();
 
-	public TypeAliasRegistry() {
+	public TypeAliasRegistry()
+	{
 		registerAlias("string", String.class);
 		registerAlias("byte", Byte.class);
 		registerAlias("long", Long.class);
@@ -79,54 +80,76 @@ public class TypeAliasRegistry {
 		registerAlias("ResultSet", ResultSet.class);
 	}
 
-	public Class resolveAlias(String string) {
-		try {
+	//解析别名
+	public Class resolveAlias(String string)
+	{
+		try
+		{
 			if (string == null)
+			{
 				return null;
+			}
 			String key = string.toLowerCase();
 			Class value;
-			if (TYPE_ALIASES.containsKey(key)) {
+			if (TYPE_ALIASES.containsKey(key))
+			{
 				value = TYPE_ALIASES.get(key);
-			} else {
+			}
+			else
+			{//这种情况下午饭做到的
 				value = Resources.classForName(string);
 			}
 			return value;
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e)
+		{
 			throw new TypeException("Could not resolve type alias '" + string + "'.  Cause: " + e, e);
 		}
 	}
 
-	public void registerAliases(String packageName) {
+	//给包注册别名
+	public void registerAliases(String packageName)
+	{
 		registerAliases(packageName, Object.class);
 	}
 
-	public void registerAliases(String packageName, Class superType) {
+	public void registerAliases(String packageName, Class superType)
+	{
 		ResolverUtil<Class> resolverUtil = new ResolverUtil<Class>();
 		resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
 		Set<Class<? extends Class>> typeSet = resolverUtil.getClasses();
-		for (Class type : typeSet) {
+		for (Class type : typeSet)
+		{
 			// Ignore inner classes and interfaces (including package-info.java)
-			if (!type.isAnonymousClass() && !type.isInterface()) {
+			if (!type.isAnonymousClass() && !type.isInterface())
+			{
 				registerAlias(type);
 			}
 		}
 	}
 
-	public void registerAlias(Class type) {
+	//给类注册别名，通过注解的形式
+	public void registerAlias(Class type)
+	{
 		String alias = type.getSimpleName();
 		Alias aliasAnnotation = (Alias) type.getAnnotation(Alias.class);
-		if (aliasAnnotation != null) {
+		if (aliasAnnotation != null)
+		{
 			alias = aliasAnnotation.value();
 		}
 		registerAlias(alias, type);
 	}
 
-	public void registerAlias(String alias, Class value) {
+	//给类注册别名
+	public void registerAlias(String alias, Class value)
+	{
 		assert alias != null;
 		String key = alias.toLowerCase();
 		if (TYPE_ALIASES.containsKey(key) && !TYPE_ALIASES.get(key).equals(value.getName())
-				&& TYPE_ALIASES.get(alias) != null) {
-			if (!value.equals(TYPE_ALIASES.get(alias))) {
+				&& TYPE_ALIASES.get(alias) != null)
+		{
+			if (!value.equals(TYPE_ALIASES.get(alias)))
+			{
 				throw new TypeException("The alias '" + alias + "' is already mapped to the value '"
 						+ TYPE_ALIASES.get(alias).getName() + "'.");
 			}
@@ -134,10 +157,14 @@ public class TypeAliasRegistry {
 		TYPE_ALIASES.put(key, value);
 	}
 
-	public void registerAlias(String alias, String value) {
-		try {
+	public void registerAlias(String alias, String value)
+	{
+		try
+		{
 			registerAlias(alias, Resources.classForName(value));
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e)
+		{
 			throw new TypeException("Error registering type alias " + alias + " for " + value + ". Cause: " + e, e);
 		}
 	}

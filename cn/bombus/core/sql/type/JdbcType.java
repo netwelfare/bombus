@@ -1,9 +1,11 @@
 package cn.bombus.core.sql.type;
 
 import java.sql.Types;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public enum JdbcType {
+public enum JdbcType
+{
 	/**
 	 * This is added to enable basic support for the ARRAY data type - but a
 	 * custom type handler is still required
@@ -17,17 +19,21 @@ public enum JdbcType {
 	public final int TYPE_CODE;
 	private static Map<Integer, JdbcType> codeLookup = new HashMap<Integer, JdbcType>();
 
-	static {
-		for (JdbcType type : JdbcType.values()) {
+	static
+	{
+		for (JdbcType type : JdbcType.values())
+		{
 			codeLookup.put(type.TYPE_CODE, type);
 		}
 	}
 
-	JdbcType(int code) {
+	JdbcType(int code)
+	{
 		this.TYPE_CODE = code;
 	}
 
-	static JdbcType forCode(int code) {
+	static JdbcType forCode(int code)
+	{
 		return codeLookup.get(code);
 	}
 

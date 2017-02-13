@@ -13,52 +13,68 @@ import java.util.Set;
 
 import cn.bombus.core.exception.ReflectionException;
 
-
-public class DefaultObjectFactory implements ObjectFactory, Serializable {
+public class DefaultObjectFactory implements ObjectFactory, Serializable
+{
 
 	private static final long serialVersionUID = -8855120656740914948L;
 
-	public Object create(Class type) {
+	public Object create(Class type)
+	{
 		return create(type, null, null);
 	}
 
-	public Object create(Class type, List<Class> constructorArgTypes, List<Object> constructorArgs) {
+	public Object create(Class type, List<Class> constructorArgTypes, List<Object> constructorArgs)
+	{
 		Class classToCreate = resolveCollectionInterface(type);
 		return instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
 	}
 
-	public void setProperties(Properties properties) {
+	public void setProperties(Properties properties)
+	{
 		// no props for default
 	}
 
-	private Object instantiateClass(Class type, List<Class> constructorArgTypes, List<Object> constructorArgs) {
-		try {
+	private Object instantiateClass(Class type, List<Class> constructorArgTypes, List<Object> constructorArgs)
+	{
+		try
+		{
 			Constructor constructor;
-			if (constructorArgTypes == null || constructorArgs == null) {
+			if (constructorArgTypes == null || constructorArgs == null)
+			{
 				constructor = type.getDeclaredConstructor();
-				if (!constructor.isAccessible()) {
+				if (!constructor.isAccessible())
+				{
 					constructor.setAccessible(true);
 				}
 				return constructor.newInstance();
-			} else {
+			}
+			else
+			{
 				constructor = type
 						.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
-				if (!constructor.isAccessible()) {
+				if (!constructor.isAccessible())
+				{
 					constructor.setAccessible(true);
 				}
 				return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			StringBuilder argTypes = new StringBuilder();
-			if (constructorArgTypes != null) {
-				for (Class argType : constructorArgTypes) {
+			if (constructorArgTypes != null)
+			{
+				for (Class argType : constructorArgTypes)
+				{
 					argTypes.append(argType.getSimpleName());
 					argTypes.append(",");
 				}
 			}
 			StringBuilder argValues = new StringBuilder();
-			if (constructorArgs != null) {
-				for (Object argValue : constructorArgs) {
+			if (constructorArgs != null)
+			{
+				for (Object argValue : constructorArgs)
+				{
 					argValues.append(String.valueOf(argValue));
 					argValues.append(",");
 				}
@@ -68,15 +84,23 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
 		}
 	}
 
-	private Class resolveCollectionInterface(Class type) {
+	private Class resolveCollectionInterface(Class type)
+	{
 		Class classToCreate;
-		if (type == List.class || type == Collection.class) {
+		if (type == List.class || type == Collection.class)
+		{
 			classToCreate = ArrayList.class;
-		} else if (type == Map.class) {
+		}
+		else if (type == Map.class)
+		{
 			classToCreate = HashMap.class;
-		} else if (type == Set.class) {
+		}
+		else if (type == Set.class)
+		{
 			classToCreate = HashSet.class;
-		} else {
+		}
+		else
+		{
 			classToCreate = type;
 		}
 		return classToCreate;
