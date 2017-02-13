@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//bombus.cn//DTD Mapper 3.0//EN" "http://bombus.cn/dtd/mapper.dtd" >
+
+<mapper namespace="StatisUserGroup">
+
+<sql id="userColumns"> user_group_id userGroupId</sql>
+
+<typeAliases>
+<typeAlias type="entity.QueryStatisUserGroup"></typeAlias>
+</typeAliases>
+   <select id="getStatisUserGroups" parameterType="map" >
+	SELECT  ${hour}
+	  <include refid="userColumns"></include>
+		<choose>
+			<when test="statFrequency=='HOUR'">hour,</when>
+			<when test="statFrequency=='DAY'">date,</when>
+		</choose>
+		<if test="pageNames!=null and pageNames.size()>0">page_name pageName,</if>
+		metric_name metricName,
+		SUM(metric_value) metricValue,
+		report_date reportDate
+		FROM
+		<choose>
+			<when test="pageNames!=null and pageNames.size()>0 and statFrequency=='DAY'">tb_data_statis_usergroup_page_day</when>
+			<when test="pageNames!=null and pageNames.size()>0 and statFrequency=='HOUR'">tb_data_statis_usergroup_page_hour</when>
+			<when test="(pageNames==null or pageNames.size()==0) and statFrequency=='DAY'">tb_data_statis_usergroup_indicator_day</when>
+			<when test="(pageNames==null or pageNames.size()==0) and statFrequency=='HOUR'">tb_data_statis_usergroup_indicator_hour</when>
+		</choose>
+		WHERE report_date &gt;=#{startDate} and report_date &lt;=#{endDate}
+				and user_group_id=#{userGroupId} and metric_name=#{indicatorName}
+			<choose>
+				<when test="pageNames!=null and pageNames.size()==1">and page_name=#{pageNames[0]}</when>
+				<when test="pageNames!=null and pageNames.size()>1">and page_name in (<foreach collection="pageNames" item="item" separator=",">#{item}</foreach>)</when>
+			</choose>
+		GROUP BY <if test="statFrequency=='DAY'">report_date</if> <if test="statFrequency=='HOUR'">hour</if>
+		ORDER BY <if test="statFrequency=='DAY'">report_date ASC</if> <if test="statFrequency=='HOUR'">hour ASC</if>
+   </select>
+   
+   
+    <select id="getStatisUserGroups2" parameterType="java.util.HashMap" resultType="entity.StatisUserGroup">
+         SELECT user_group_id userGroupId from table
+         GROUP BY <if test="statFrequency=='HOUR'">report_date  #{statFrequency}</if> 
+         ${name} <if test="hour!=null">hello world</if>
+   </select>
+   
+   <delete id="deleteUserGroupIndicatorDayStatisData" parameterType="long">
+   	   delete from tb_data_statis_usergroup_indicator_day
+   	   where user_group_id=#{userGroupId}
+   </delete>
+   
+   <delete id="deleteUserGroupIndicatorHourStatisData" parameterType="long">
+   	   delete from tb_data_statis_usergroup_indicator_hour
+   	   where user_group_id=#{userGroupId}
+   </delete>
+   
+    <delete id="deleteUserGroupPageDayStatisData" parameterType="long">
+   	   delete from tb_data_statis_usergroup_page_day
+   	   where user_group_id=#{userGroupId}
+   </delete>
+   
+   <delete id="deleteUserGroupPageHourStatisData" parameterType="long">
+   	   delete from tb_data_statis_usergroup_page_hour
+   	   where user_group_id=#{userGroupId}
+   </delete>
+
+</mapper>
