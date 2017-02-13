@@ -3,27 +3,32 @@ package cn.bombus.core.reflect;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class MethodInvoker implements Invoker {
-
-	// 这种class的方式是不对的�??
+public class MethodInvoker implements Invoker
+{
 	private Class type;
 	private Method method;
 
-	public MethodInvoker(Method method) {
+	public MethodInvoker(Method method)
+	{
 		this.method = method;
 
-		if (method.getParameterTypes().length == 1) {
+		if (method.getParameterTypes().length == 1)
+		{
 			type = method.getParameterTypes()[0];
-		} else {
+		}
+		else
+		{
 			type = method.getReturnType();
 		}
 	}
 
-	public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
+	public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException
+	{
 		return method.invoke(target, args);
 	}
 
-	public Class getType() {
+	public Class getType()
+	{
 		return type;
 	}
 }

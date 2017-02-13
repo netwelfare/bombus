@@ -60,7 +60,7 @@ public class TextSqlNode implements SqlNode
 					context.getBindings().put("value", parameter);
 				}
 				Object value = Ognl.getValue(content, context.getBindings());
-				if (content.contains("#{"))
+				//if (content.contains("#{"))
 				{
 					if (value instanceof String)
 					{

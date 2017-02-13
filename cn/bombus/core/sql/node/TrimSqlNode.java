@@ -10,7 +10,8 @@ import java.util.StringTokenizer;
 import cn.bombus.core.Configuration;
 import cn.bombus.core.sql.DynamicContext;
 
-public class TrimSqlNode implements SqlNode {
+public class TrimSqlNode implements SqlNode
+{
 	private SqlNode contents;
 	private String prefix;
 	private String suffix;
@@ -19,7 +20,8 @@ public class TrimSqlNode implements SqlNode {
 	private Configuration configuration;
 
 	public TrimSqlNode(Configuration configuration, SqlNode contents, String prefix, String prefixesToOverride,
-			String suffix, String suffixesToOverride) {
+			String suffix, String suffixesToOverride)
+	{
 		this.contents = contents;
 		this.prefix = prefix;
 		this.prefixesToOverride = parseOverrides(prefixesToOverride);
@@ -28,21 +30,25 @@ public class TrimSqlNode implements SqlNode {
 		this.configuration = configuration;
 	}
 
-	public boolean apply(DynamicContext context) {
+	public boolean apply(DynamicContext context)
+	{
 		FilteredDynamicContext filteredDynamicContext = new FilteredDynamicContext(context);
 		boolean result = contents.apply(filteredDynamicContext);
 		filteredDynamicContext.applyAll();
 		return result;
 	}
 
-	private List<String> parseOverrides(String overrides) {
-		if (overrides != null) {
+	//没有中间变量，写法甚好。使用了空和有值的array
+	private List<String> parseOverrides(String overrides)
+	{
+		if (overrides != null)
+		{
 			final StringTokenizer parser = new StringTokenizer(overrides, "|", false);
 			return new ArrayList<String>() {
 				private static final long serialVersionUID = -2504816393625384165L;
-
 				{
-					while (parser.hasMoreTokens()) {
+					while (parser.hasMoreTokens())
+					{
 						add(parser.nextToken().toUpperCase(Locale.ENGLISH));
 					}
 				}
@@ -51,13 +57,15 @@ public class TrimSqlNode implements SqlNode {
 		return Collections.EMPTY_LIST;
 	}
 
-	private class FilteredDynamicContext extends DynamicContext {
+	private class FilteredDynamicContext extends DynamicContext
+	{
 		private DynamicContext delegate;
 		private boolean prefixApplied;
 		private boolean suffixApplied;
 		private StringBuilder sqlBuffer;
 
-		public FilteredDynamicContext(DynamicContext delegate) {
+		public FilteredDynamicContext(DynamicContext delegate)
+		{
 			super(configuration, null);
 			this.delegate = delegate;
 			this.prefixApplied = false;
@@ -65,70 +73,85 @@ public class TrimSqlNode implements SqlNode {
 			this.sqlBuffer = new StringBuilder();
 		}
 
-		public void applyAll() {
+		public void applyAll()
+		{
 			sqlBuffer = new StringBuilder(sqlBuffer.toString().trim());
 			String trimmedUppercaseSql = sqlBuffer.toString().toUpperCase(Locale.ENGLISH);
-			if (trimmedUppercaseSql.length() > 0) {
+			if (trimmedUppercaseSql.length() > 0)
+			{
 				applyPrefix(sqlBuffer, trimmedUppercaseSql);
 				applySuffix(sqlBuffer, trimmedUppercaseSql);
 			}
 			delegate.appendSql(sqlBuffer.toString());
 		}
 
-		public Map<String, Object> getBindings() {
+		public Map<String, Object> getBindings()
+		{
 			return delegate.getBindings();
 		}
 
-		public void bind(String name, Object value) {
+		public void bind(String name, Object value)
+		{
 			delegate.bind(name, value);
 		}
 
-		public int getUniqueNumber() {
+		public int getUniqueNumber()
+		{
 			return delegate.getUniqueNumber();
 		}
 
-		public void appendSql(String sql) {
+		public void appendSql(String sql)
+		{
 			sqlBuffer.append(sql);
 		}
 
-		public String getSql() {
+		public String getSql()
+		{
 			return delegate.getSql();
 		}
 
-		private void applyPrefix(StringBuilder sql, String trimmedUppercaseSql) {
-			if (!prefixApplied) {
+		private void applyPrefix(StringBuilder sql, String trimmedUppercaseSql)
+		{
+			if (!prefixApplied)
+			{
 				prefixApplied = true;
-				for (String toRemove : prefixesToOverride) {
-					if (trimmedUppercaseSql.startsWith(toRemove) || trimmedUppercaseSql.startsWith(toRemove.trim())) {
+				for (String toRemove : prefixesToOverride)
+				{
+					if (trimmedUppercaseSql.startsWith(toRemove) || trimmedUppercaseSql.startsWith(toRemove.trim()))
+					{
 						sql.delete(0, toRemove.trim().length());
 						break;
 					}
 				}
-				if (prefix != null) {
+				if (prefix != null)
+				{
 					sql.insert(0, " ");
 					sql.insert(0, prefix);
 				}
 			}
 		}
 
-		private void applySuffix(StringBuilder sql, String trimmedUppercaseSql) {
-			if (!suffixApplied) {
+		private void applySuffix(StringBuilder sql, String trimmedUppercaseSql)
+		{
+			if (!suffixApplied)
+			{
 				suffixApplied = true;
-				for (String toRemove : suffixesToOverride) {
-					if (trimmedUppercaseSql.endsWith(toRemove) || trimmedUppercaseSql.endsWith(toRemove.trim())) {
+				for (String toRemove : suffixesToOverride)
+				{
+					if (trimmedUppercaseSql.endsWith(toRemove) || trimmedUppercaseSql.endsWith(toRemove.trim()))
+					{
 						int start = sql.length() - toRemove.trim().length();
 						int end = sql.length();
 						sql.delete(start, end);
 						break;
 					}
 				}
-				if (suffix != null) {
+				if (suffix != null)
+				{
 					sql.append(" ");
 					sql.append(suffix);
 				}
 			}
 		}
-
 	}
-
 }
