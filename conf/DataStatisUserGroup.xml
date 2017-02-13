@@ -9,7 +9,7 @@
 <typeAlias type="entity.QueryStatisUserGroup"></typeAlias>
 </typeAliases>
    <select id="getStatisUserGroups" parameterType="map" >
-	SELECT  ${hour}
+	SELECT 
 	  <include refid="userColumns"></include>
 		<choose>
 			<when test="statFrequency=='HOUR'">hour,</when>
@@ -36,7 +36,7 @@
 		ORDER BY <if test="statFrequency=='DAY'">report_date ASC</if> <if test="statFrequency=='HOUR'">hour ASC</if>
    </select>
    
-   
+   <!--  
     <select id="getStatisUserGroups2" parameterType="java.util.HashMap" resultType="entity.StatisUserGroup">
          SELECT user_group_id userGroupId from table
          GROUP BY <if test="statFrequency=='HOUR'">report_date  #{statFrequency}</if> 
@@ -62,5 +62,5 @@
    	   delete from tb_data_statis_usergroup_page_hour
    	   where user_group_id=#{userGroupId}
    </delete>
-
+-->
 </mapper>

@@ -41,6 +41,7 @@ public class XMLStatementBuilder extends BaseBuilder
 		this.context = context;
 	}
 
+	//针对单个sql语句进行处理的：select|insert|update|delete
 	public void parseStatementNode()
 	{
 		String id = context.getStringAttribute("id");
@@ -57,7 +58,9 @@ public class XMLStatementBuilder extends BaseBuilder
 		StatementType statementType = StatementType
 				.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
 		ResultSetType resultSetTypeEnum = null;
+
 		List<SqlNode> contents = parseDynamicTags(context);
+
 		MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
 		SqlSource sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
 		String nodeName = context.getNode().getNodeName();
@@ -95,6 +98,20 @@ public class XMLStatementBuilder extends BaseBuilder
 		return builderAssistant.applyCurrentNamespace(context.getStringAttribute("id"));
 	}
 
+	/*<select parameterType="map" id="getStatisUserGroups">
+	<include refid="userColumns"/>
+	<choose>
+	<when test="statFrequency=='HOUR'">hour,</when>
+	<when test="statFrequency=='DAY'">date,</when>
+	</choose>
+	<if test="pageNames!=null and pageNames.size()>0">page_name pageName,</if>
+	<choose>
+	<when test="pageNames!=null and pageNames.size()>0 and statFrequency=='DAY'">tb_data_statis_usergroup_page_day</when>
+	<when test="pageNames!=null and pageNames.size()>0 and statFrequency=='HOUR'">tb_data_statis_usergroup_page_hour</when>
+	<when test="(pageNames==null or pageNames.size()==0) and statFrequency=='DAY'">tb_data_statis_usergroup_indicator_day</when>
+	<when test="(pageNames==null or pageNames.size()==0) and statFrequency=='HOUR'">tb_data_statis_usergroup_indicator_hour</when>
+	</choose>*/
+
 	private List<SqlNode> parseDynamicTags(XNode node)
 	{
 		List<SqlNode> contents = new ArrayList<SqlNode>();
@@ -125,7 +142,6 @@ public class XMLStatementBuilder extends BaseBuilder
 
 	private Map<String, NodeHandler> nodeHandlers = new HashMap<String, NodeHandler>() {
 		private static final long serialVersionUID = 7123056019193266281L;
-
 		{
 			put("include", new IncludeNodeHandler());
 			put("trim", new TrimHandler());
