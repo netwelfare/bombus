@@ -15,7 +15,8 @@ import cn.bombus.core.sql.wrap.DefaultObjectWrapperFactory;
 import cn.bombus.core.sql.wrap.ObjectWrapperFactory;
 import cn.bombus.core.xml.XNode;
 
-public class Configuration {
+public class Configuration
+{
 	protected Properties variables = new Properties();
 	protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
 	protected ObjectFactory objectFactory = new DefaultObjectFactory();
@@ -26,165 +27,159 @@ public class Configuration {
 			"XML fragments parsed from previous mappers");
 	protected final Map<String, MappedStatement> mappedStatements = new StrictMap<String, MappedStatement>(
 			"Mapped Statements collection");
-
-	// protected final Map<String, KeyGenerator> keyGenerators = new
-	// StrictMap<String, KeyGenerator>(
-	// "Key Generators collection");
-	// protected boolean useGeneratedKeys = false;
-	// protected final Collection<XMLStatementBuilder> incompleteStatements =
-	// new LinkedList<XMLStatementBuilder>();
 	protected final Map<String, ParameterMap> parameterMaps = new StrictMap<String, ParameterMap>(
 			"Parameter Maps collection");
 
-	public Configuration() {
+	public Configuration()
+	{
 
 	}
 
-	public Properties getVariables() {
+	public Properties getVariables()
+	{
 		return variables;
 	}
 
-	public TypeAliasRegistry getTypeAliasRegistry() {
+	public TypeAliasRegistry getTypeAliasRegistry()
+	{
 		return typeAliasRegistry;
 	}
 
-	public MetaObject newMetaObject(Object object) {
+	public MetaObject newMetaObject(Object object)
+	{
 		return MetaObject.forObject(object, objectFactory, objectWrapperFactory);
 	}
 
-	// public TypeHandlerRegistry getTypeHandlerRegistry()
-	// {
-	// return typeHandlerRegistry;
-	// }
-
-	public ResultMap getResultMap(String id) {
+	public ResultMap getResultMap(String id)
+	{
 		return resultMaps.get(id);
 	}
 
-	protected static class StrictMap<J extends String, K extends Object> extends HashMap<J, K> {
-
+	protected static class StrictMap<J extends String, K extends Object> extends HashMap<J, K>
+	{
 		private String name;
 
-		public StrictMap(String name, int initialCapacity, float loadFactor) {
+		public StrictMap(String name, int initialCapacity, float loadFactor)
+		{
 			super(initialCapacity, loadFactor);
 			this.name = name;
 		}
 
-		public StrictMap(String name, int initialCapacity) {
+		public StrictMap(String name, int initialCapacity)
+		{
 			super(initialCapacity);
 			this.name = name;
 		}
 
-		public StrictMap(String name) {
+		public StrictMap(String name)
+		{
 			super();
 			this.name = name;
 		}
 
-		public StrictMap(String name, Map<? extends J, ? extends K> m) {
+		public StrictMap(String name, Map<? extends J, ? extends K> m)
+		{
 			super(m);
 			this.name = name;
 		}
 
-		public K put(J key, K value) {
+		public K put(J key, K value)
+		{
 			if (containsKey(key))
+			{
 				throw new IllegalArgumentException(name + " already contains value for " + key);
-			if (key.contains(".")) {
+			}
+			if (key.contains("."))
+			{
 				final String shortKey = getShortName(key);
-				if (super.get(shortKey) == null) {
+				if (super.get(shortKey) == null)
+				{
 					super.put((J) shortKey, value);
-				} else {
+				}
+				else
+				{//放进以后含糊的类，但是在取的时候是不会取出来的
 					super.put((J) shortKey, (K) new Ambiguity(shortKey));
 				}
 			}
 			return super.put(key, value);
 		}
 
-		public K get(Object key) {
+		public K get(Object key)
+		{
 			K value = super.get(key);
-			if (value == null) {
+			if (value == null)
+			{
 				throw new IllegalArgumentException(name + " does not contain value for " + key);
 			}
-			if (value instanceof Ambiguity) {
+			if (value instanceof Ambiguity)
+			{
 				throw new IllegalArgumentException(((Ambiguity) value).getSubject() + " is ambiguous in " + name
 						+ " (try using the full name including the namespace, or rename one of the entries)");
 			}
 			return value;
 		}
 
-		private String getShortName(J key) {
+		private String getShortName(J key)
+		{
 			final String[] keyparts = key.split("\\.");
 			final String shortKey = keyparts[keyparts.length - 1];
 			return shortKey;
 		}
 
-		protected static class Ambiguity {
+		protected static class Ambiguity
+		{
 			private String subject;
 
-			public Ambiguity(String subject) {
+			public Ambiguity(String subject)
+			{
 				this.subject = subject;
 			}
 
-			public String getSubject() {
+			public String getSubject()
+			{
 				return subject;
 			}
 		}
 	}
 
-	public Map<String, XNode> getSqlFragments() {
+	public Map<String, XNode> getSqlFragments()
+	{
 		return sqlFragments;
 	}
 
-	public MappedStatement getMappedStatement(String id) {
+	public MappedStatement getMappedStatement(String id)
+	{
 		return this.getMappedStatement(id, true);
 	}
 
-	public MappedStatement getMappedStatement(String id, boolean validateIncompleteStatements) {
+	public MappedStatement getMappedStatement(String id, boolean validateIncompleteStatements)
+	{
 
 		return mappedStatements.get(id);
 	}
 
-	// public boolean hasKeyGenerator(String id)
-	// {
-	// return keyGenerators.containsKey(id);
-	// }
-	//
-	// public KeyGenerator getKeyGenerator(String id)
-	// {
-	// return keyGenerators.get(id);
-	// }
-	//
-	// public boolean isUseGeneratedKeys()
-	// {
-	// return useGeneratedKeys;
-	// }
-	//
-	// public void addKeyGenerator(String id, KeyGenerator keyGenerator)
-	// {
-	// keyGenerators.put(id, keyGenerator);
-	// }
-	//
-	// public Collection<XMLStatementBuilder> getIncompleteStatements()
-	// {
-	// return incompleteStatements;
-	// }
-
-	public void addResultMap(ResultMap rm) {
+	public void addResultMap(ResultMap rm)
+	{
 		resultMaps.put(rm.getId(), rm);
 	}
 
-	public void addMappedStatement(MappedStatement ms) {
+	public void addMappedStatement(MappedStatement ms)
+	{
 		mappedStatements.put(ms.getId(), ms);
 	}
 
-	public ParameterMap getParameterMap(String id) {
+	public ParameterMap getParameterMap(String id)
+	{
 		return parameterMaps.get(id);
 	}
 
-	public void addParameterMap(ParameterMap pm) {
+	public void addParameterMap(ParameterMap pm)
+	{
 		parameterMaps.put(pm.getId(), pm);
 	}
 
-	public TypeHandlerRegistry getTypeHandlerRegistry() {
+	public TypeHandlerRegistry getTypeHandlerRegistry()
+	{
 		return typeHandlerRegistry;
 	}
 }

@@ -9,7 +9,7 @@ import cn.bombus.core.sql.type.TypeAliasRegistry;
 public abstract class BaseBuilder
 {
 	/**
-	 * 最基本的一个类
+	 * 最基本的一个类，需要configuration，需要别名。这是顺其自然的东西
 	 */
 	protected final Configuration configuration;
 	protected final TypeAliasRegistry typeAliasRegistry;
