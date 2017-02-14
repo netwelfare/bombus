@@ -5,24 +5,32 @@ import java.util.Properties;
 import cn.bombus.core.sql.token.GenericTokenParser;
 import cn.bombus.core.sql.token.TokenHandler;
 
-public class PropertyParser {
-	public static String parse(String string, Properties variables) {
+public class PropertyParser
+{
+	public static String parse(String string, Properties variables)
+	{
 		VariableTokenHandler handler = new VariableTokenHandler(variables);
 		GenericTokenParser parser = new GenericTokenParser("${", "}", handler);
 		return parser.parse(string);
 	}
 
-	private static class VariableTokenHandler implements TokenHandler {
+	private static class VariableTokenHandler implements TokenHandler
+	{
 		private Properties variables;
 
-		public VariableTokenHandler(Properties variables) {
+		public VariableTokenHandler(Properties variables)
+		{
 			this.variables = variables;
 		}
 
-		public String handleToken(String content) {
-			if (variables != null && variables.containsKey(content)) {
+		public String handleToken(String content)
+		{
+			if (variables != null && variables.containsKey(content))
+			{
 				return variables == null ? content : variables.getProperty(content);
-			} else {
+			}
+			else
+			{
 				return "${" + content + "}";
 			}
 		}

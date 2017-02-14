@@ -5,10 +5,10 @@ import cn.bombus.core.sql.type.JdbcType;
 import cn.bombus.core.sql.type.TypeHandler;
 import cn.bombus.core.sql.type.TypeHandlerRegistry;
 
-public class ParameterMapping {
+public class ParameterMapping
+{
 
 	private Configuration configuration;
-
 	private String property;
 	private ParameterMode mode;
 	private Class javaType = Object.class;
@@ -18,69 +18,84 @@ public class ParameterMapping {
 	private String resultMapId;
 	private String jdbcTypeName;
 
-	private ParameterMapping() {
+	private ParameterMapping()
+	{
 	}
 
-	public static class Builder {
+	public static class Builder
+	{
 		private ParameterMapping parameterMapping = new ParameterMapping();
 
-		public Builder(Configuration configuration, String property, TypeHandler typeHandler) {
+		public Builder(Configuration configuration, String property, TypeHandler typeHandler)
+		{
 			parameterMapping.configuration = configuration;
 			parameterMapping.property = property;
 			parameterMapping.typeHandler = typeHandler;
 			parameterMapping.mode = ParameterMode.IN;
 		}
 
-		public Builder(Configuration configuration, String property, Class javaType) {
+		public Builder(Configuration configuration, String property, Class javaType)
+		{
 			parameterMapping.configuration = configuration;
 			parameterMapping.property = property;
 			parameterMapping.javaType = javaType;
 			parameterMapping.mode = ParameterMode.IN;
 		}
 
-		public Builder mode(ParameterMode mode) {
+		public Builder mode(ParameterMode mode)
+		{
 			parameterMapping.mode = mode;
 			return this;
 		}
 
-		public Builder javaType(Class javaType) {
+		public Builder javaType(Class javaType)
+		{
 			parameterMapping.javaType = javaType;
 			return this;
 		}
 
-		public Builder jdbcType(JdbcType jdbcType) {
+		public Builder jdbcType(JdbcType jdbcType)
+		{
 			parameterMapping.jdbcType = jdbcType;
 			return this;
 		}
 
-		public Builder numericScale(Integer numericScale) {
+		public Builder numericScale(Integer numericScale)
+		{
 			parameterMapping.numericScale = numericScale;
 			return this;
 		}
 
-		public Builder resultMapId(String resultMapId) {
+		public Builder resultMapId(String resultMapId)
+		{
 			parameterMapping.resultMapId = resultMapId;
 			return this;
 		}
 
-		public Builder typeHandler(TypeHandler typeHandler) {
+		public Builder typeHandler(TypeHandler typeHandler)
+		{
 			parameterMapping.typeHandler = typeHandler;
 			return this;
 		}
 
-		public Builder jdbcTypeName(String jdbcTypeName) {
+		public Builder jdbcTypeName(String jdbcTypeName)
+		{
 			parameterMapping.jdbcTypeName = jdbcTypeName;
 			return this;
 		}
 
-		public ParameterMapping build() {
+		public ParameterMapping build()
+		{
 			resolveTypeHandler();
 			return parameterMapping;
 		}
 
-		private void resolveTypeHandler() {
-			if (parameterMapping.typeHandler == null) {
-				if (parameterMapping.javaType != null) {
+		private void resolveTypeHandler()
+		{
+			if (parameterMapping.typeHandler == null)
+			{
+				if (parameterMapping.javaType != null)
+				{
 					Configuration configuration = parameterMapping.configuration;
 					TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
 					parameterMapping.typeHandler = typeHandlerRegistry.getTypeHandler(parameterMapping.javaType,
@@ -91,35 +106,43 @@ public class ParameterMapping {
 
 	}
 
-	public String getProperty() {
+	public String getProperty()
+	{
 		return property;
 	}
 
-	public ParameterMode getMode() {
+	public ParameterMode getMode()
+	{
 		return mode;
 	}
 
-	public Class getJavaType() {
+	public Class getJavaType()
+	{
 		return javaType;
 	}
 
-	public JdbcType getJdbcType() {
+	public JdbcType getJdbcType()
+	{
 		return jdbcType;
 	}
 
-	public Integer getNumericScale() {
+	public Integer getNumericScale()
+	{
 		return numericScale;
 	}
 
-	public TypeHandler getTypeHandler() {
+	public TypeHandler getTypeHandler()
+	{
 		return typeHandler;
 	}
 
-	public String getResultMapId() {
+	public String getResultMapId()
+	{
 		return resultMapId;
 	}
 
-	public String getJdbcTypeName() {
+	public String getJdbcTypeName()
+	{
 		return jdbcTypeName;
 	}
 

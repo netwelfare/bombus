@@ -23,7 +23,6 @@ import cn.bombus.core.sql.type.TypeHandler;
 
 public class MapperBuilderAssistant extends BaseBuilder
 {
-
 	private String currentNamespace;
 	private String resource;
 	// private Cache currentCache;

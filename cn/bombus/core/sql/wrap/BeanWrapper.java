@@ -25,7 +25,6 @@ public class BeanWrapper extends BaseWrapper
 	{
 		if (prop.getIndex() != null)
 		{
-
 			Object collection = resolveCollection(prop, object);
 			return getCollectionValue(prop, collection);
 		}
