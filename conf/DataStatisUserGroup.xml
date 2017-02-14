@@ -8,7 +8,9 @@
 <typeAliases>
 <typeAlias type="entity.QueryStatisUserGroup"></typeAlias>
 </typeAliases>
-   <select id="getStatisUserGroups" parameterType="map" >
+
+<!-- 
+<select id="getStatisUserGroups" parameterType="map" >
 	SELECT 
 	  <include refid="userColumns"></include>
 		<choose>
@@ -34,8 +36,19 @@
 			</choose>
 		GROUP BY <if test="statFrequency=='DAY'">report_date</if> <if test="statFrequency=='HOUR'">hour</if>
 		ORDER BY <if test="statFrequency=='DAY'">report_date ASC</if> <if test="statFrequency=='HOUR'">hour ASC</if>
-   </select>
+</select>
+ -->
    
+<!--此sql是精简版本的，是为了方便测试使用的  -->
+<select id="getStatisUserGroups2" parameterType="map" >
+	SELECT #{statFrequency}
+	  <include refid="userColumns"></include>
+		<choose>
+			<when test="statFrequency=='HOUR'">hour,</when>
+			<when test="statFrequency=='DAY'">date,</when>
+		</choose>
+</select>
+
    <!--  
     <select id="getStatisUserGroups2" parameterType="java.util.HashMap" resultType="entity.StatisUserGroup">
          SELECT user_group_id userGroupId from table
