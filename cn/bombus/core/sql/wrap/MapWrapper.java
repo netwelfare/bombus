@@ -7,104 +7,148 @@ import cn.bombus.core.PropertyTokenizer;
 import cn.bombus.core.reflect.MetaObject;
 import cn.bombus.core.reflect.ObjectFactory;
 
-public class MapWrapper extends BaseWrapper {
-
+public class MapWrapper extends BaseWrapper
+{
 	private Map map;
 
-	public MapWrapper(MetaObject metaObject, Map map) {
+	public MapWrapper(MetaObject metaObject, Map map)
+	{
 		super(metaObject);
 		this.map = map;
 	}
 
-	public Object get(PropertyTokenizer prop) {
-		if (prop.getIndex() != null) {
+	public Object get(PropertyTokenizer prop)
+	{
+		if (prop.getIndex() != null)
+		{
 			Object collection = resolveCollection(prop, map);
 			return getCollectionValue(prop, collection);
-		} else {
+		}
+		else
+		{
 			return map.get(prop.getName());
 		}
 	}
 
-	public void set(PropertyTokenizer prop, Object value) {
-		if (prop.getIndex() != null) {
+	public void set(PropertyTokenizer prop, Object value)
+	{
+		if (prop.getIndex() != null)
+		{
 			Object collection = resolveCollection(prop, map);
 			setCollectionValue(prop, collection, value);
-		} else {
+		}
+		else
+		{
 			map.put(prop.getName(), value);
 		}
 	}
 
-	public String findProperty(String name) {
+	public String findProperty(String name)
+	{
 		return name;
 	}
 
-	public String[] getGetterNames() {
+	public String[] getGetterNames()
+	{
 		return (String[]) map.keySet().toArray(new String[map.keySet().size()]);
 	}
 
-	public String[] getSetterNames() {
+	public String[] getSetterNames()
+	{
 		return (String[]) map.keySet().toArray(new String[map.keySet().size()]);
 	}
 
-	public Class getSetterType(String name) {
+	public Class getSetterType(String name)
+	{
 		PropertyTokenizer prop = new PropertyTokenizer(name);
-		if (prop.hasNext()) {
+		if (prop.hasNext())
+		{
 			MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-			if (metaValue == MetaObject.NULL_META_OBJECT) {
+			if (metaValue == MetaObject.NULL_META_OBJECT)
+			{
 				return Object.class;
-			} else {
+			}
+			else
+			{
 				return metaValue.getSetterType(prop.getChildren());
 			}
-		} else {
-			if (map.get(name) != null) {
+		}
+		else
+		{
+			if (map.get(name) != null)
+			{
 				return map.get(name).getClass();
-			} else {
+			}
+			else
+			{
 				return Object.class;
 			}
 		}
 	}
 
-	public Class getGetterType(String name) {
+	public Class getGetterType(String name)
+	{
 		PropertyTokenizer prop = new PropertyTokenizer(name);
-		if (prop.hasNext()) {
+		if (prop.hasNext())
+		{
 			MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-			if (metaValue == MetaObject.NULL_META_OBJECT) {
+			if (metaValue == MetaObject.NULL_META_OBJECT)
+			{
 				return Object.class;
-			} else {
+			}
+			else
+			{
 				return metaValue.getGetterType(prop.getChildren());
 			}
-		} else {
-			if (map.get(name) != null) {
+		}
+		else
+		{
+			if (map.get(name) != null)
+			{
 				return map.get(name).getClass();
-			} else {
+			}
+			else
+			{
 				return Object.class;
 			}
 		}
 	}
 
-	public boolean hasSetter(String name) {
+	public boolean hasSetter(String name)
+	{
 		return true;
 	}
 
-	public boolean hasGetter(String name) {
+	public boolean hasGetter(String name)
+	{
 		PropertyTokenizer prop = new PropertyTokenizer(name);
-		if (prop.hasNext()) {
-			if (map.containsKey(prop.getIndexedName())) {
+		if (prop.hasNext())
+		{
+			if (map.containsKey(prop.getIndexedName()))
+			{
 				MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-				if (metaValue == MetaObject.NULL_META_OBJECT) {
+				if (metaValue == MetaObject.NULL_META_OBJECT)
+				{
 					return map.containsKey(name);
-				} else {
+				}
+				else
+				{
 					return metaValue.hasGetter(prop.getChildren());
 				}
-			} else {
+			}
+			else
+			{
 				return false;
 			}
-		} else {
+		}
+		else
+		{
 			return map.containsKey(name);
 		}
 	}
 
-	public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
+	public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory)
+	{
 		HashMap map = new HashMap();
 		set(prop, map);
 		return MetaObject.forObject(map, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory());

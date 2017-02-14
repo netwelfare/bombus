@@ -223,7 +223,6 @@ public class MapperBuilderAssistant extends BaseBuilder
 			resultMaps.add(inlineResultMapBuilder.build());
 		}
 		statementBuilder.resultMaps(resultMaps);
-
 		statementBuilder.resultSetType(resultSetType);
 	}
 

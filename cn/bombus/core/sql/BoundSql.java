@@ -8,7 +8,8 @@ import cn.bombus.core.Configuration;
 import cn.bombus.core.reflect.MetaObject;
 import cn.bombus.core.sql.parameter.ParameterMapping;
 
-public class BoundSql {
+public class BoundSql
+{
 	private String sql;
 	private List<ParameterMapping> parameterMappings;
 	private Object parameterObject;
@@ -16,7 +17,8 @@ public class BoundSql {
 	private MetaObject metaParameters;
 
 	public BoundSql(Configuration configuration, String sql, List<ParameterMapping> parameterMappings,
-			Object parameterObject) {
+			Object parameterObject)
+	{
 		this.sql = sql;
 		this.parameterMappings = parameterMappings;
 		this.parameterObject = parameterObject;
@@ -24,27 +26,33 @@ public class BoundSql {
 		this.metaParameters = configuration.newMetaObject(additionalParameters);
 	}
 
-	public String getSql() {
+	public String getSql()
+	{
 		return sql;
 	}
 
-	public List<ParameterMapping> getParameterMappings() {
+	public List<ParameterMapping> getParameterMappings()
+	{
 		return parameterMappings;
 	}
 
-	public Object getParameterObject() {
+	public Object getParameterObject()
+	{
 		return parameterObject;
 	}
 
-	public boolean hasAdditionalParameter(String name) {
+	public boolean hasAdditionalParameter(String name)
+	{
 		return metaParameters.hasGetter(name);
 	}
 
-	public void setAdditionalParameter(String name, Object value) {
+	public void setAdditionalParameter(String name, Object value)
+	{
 		metaParameters.setValue(name, value);
 	}
 
-	public Object getAdditionalParameter(String name) {
+	public Object getAdditionalParameter(String name)
+	{
 		return metaParameters.getValue(name);
 	}
 }

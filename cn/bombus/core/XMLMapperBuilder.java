@@ -42,7 +42,7 @@ public class XMLMapperBuilder extends BaseBuilder
 			XNode context = parser.evalNode("/mapper");
 			typeAliasesElement(context.evalNode("typeAliases"));
 			configurationElement(context);
-			bindMapperForNamespace();
+			//bindMapperForNamespace();
 		}
 	}
 
@@ -75,6 +75,7 @@ public class XMLMapperBuilder extends BaseBuilder
 	{
 		for (XNode context : list)
 		{
+			//context表示一个sql语句，就是带ID的一个xml片段
 			final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant,
 					context);
 			try

@@ -28,10 +28,14 @@ public class TextSqlNode implements SqlNode
 			GenericTokenParser parser = new GenericTokenParser("#{", "}", new BindingTokenParser(context));
 			context.appendSql(parser.parse(text));
 		}
-		else
+		else if (text.contains("${"))
 		{
 			GenericTokenParser parser = new GenericTokenParser("${", "}", new BindingTokenParser(context));
 			context.appendSql(parser.parse(text));
+		}
+		else
+		{
+			context.appendSql(text);
 		}
 		return true;
 	}

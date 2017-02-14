@@ -233,7 +233,7 @@ public class XMLStatementBuilder extends BaseBuilder
 		}
 
 		private List<SqlNode> contents(XNode includeNode)
-		{
+		{//内部类使用外部类的私有函数
 			return parseDynamicTags(includeNode);
 		}
 	}

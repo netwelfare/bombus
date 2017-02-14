@@ -13,8 +13,8 @@ import cn.bombus.core.sql.parameter.ParameterMapping;
 import cn.bombus.core.sql.result.ResultMap;
 import cn.bombus.core.sql.result.ResultSetType;
 
-public class MappedStatement {
-
+public class MappedStatement
+{
 	private String resource;
 	private Configuration configuration;
 	private String id;
@@ -23,7 +23,6 @@ public class MappedStatement {
 	private StatementType statementType;
 	private ResultSetType resultSetType;
 	private SqlSource sqlSource;
-	// private Cache cache;
 	private ParameterMap parameterMap;
 	private List<ResultMap> resultMaps;
 	private boolean flushCacheRequired;
@@ -33,13 +32,16 @@ public class MappedStatement {
 	private String keyProperty;
 	private boolean hasNestedResultMaps;
 
-	private MappedStatement() {
+	private MappedStatement()
+	{
 	}
 
-	public static class Builder {
+	public static class Builder
+	{
 		private MappedStatement mappedStatement = new MappedStatement();
 
-		public Builder(Configuration configuration, String id, SqlSource sqlSource, SqlCommandType sqlCommandType) {
+		public Builder(Configuration configuration, String id, SqlSource sqlSource, SqlCommandType sqlCommandType)
+		{
 			mappedStatement.configuration = configuration;
 			mappedStatement.id = id;
 			mappedStatement.sqlSource = sqlSource;
@@ -52,76 +54,84 @@ public class MappedStatement {
 
 		}
 
-		public Builder resource(String resource) {
+		public Builder resource(String resource)
+		{
 			mappedStatement.resource = resource;
 			return this;
 		}
 
-		public String id() {
+		public String id()
+		{
 			return mappedStatement.id;
 		}
 
-		public Builder parameterMap(ParameterMap parameterMap) {
+		public Builder parameterMap(ParameterMap parameterMap)
+		{
 			mappedStatement.parameterMap = parameterMap;
 			return this;
 		}
 
-		public Builder resultMaps(List<ResultMap> resultMaps) {
+		public Builder resultMaps(List<ResultMap> resultMaps)
+		{
 			mappedStatement.resultMaps = resultMaps;
-			for (ResultMap resultMap : resultMaps) {
+			for (ResultMap resultMap : resultMaps)
+			{
 				mappedStatement.hasNestedResultMaps = mappedStatement.hasNestedResultMaps
 						|| resultMap.hasNestedResultMaps();
 			}
 			return this;
 		}
 
-		public Builder fetchSize(Integer fetchSize) {
+		public Builder fetchSize(Integer fetchSize)
+		{
 			mappedStatement.fetchSize = fetchSize;
 			return this;
 		}
 
-		public Builder timeout(Integer timeout) {
+		public Builder timeout(Integer timeout)
+		{
 			mappedStatement.timeout = timeout;
 			return this;
 		}
 
-		public Builder statementType(StatementType statementType) {
+		public Builder statementType(StatementType statementType)
+		{
 			mappedStatement.statementType = statementType;
 			return this;
 		}
 
-		public Builder resultSetType(ResultSetType resultSetType) {
+		public Builder resultSetType(ResultSetType resultSetType)
+		{
 			mappedStatement.resultSetType = resultSetType;
 			return this;
 		}
 
-		// public Builder cache(Cache cache)
-		// {
-		// mappedStatement.cache = cache;
-		// return this;
-		// }
-
-		public Builder flushCacheRequired(boolean flushCacheRequired) {
+		public Builder flushCacheRequired(boolean flushCacheRequired)
+		{
 			mappedStatement.flushCacheRequired = flushCacheRequired;
 			return this;
 		}
 
-		public Builder useCache(boolean useCache) {
+		public Builder useCache(boolean useCache)
+		{
 			mappedStatement.useCache = useCache;
 			return this;
 		}
 
-		public Builder keyGenerator(KeyGenerator keyGenerator) {
+		public Builder keyGenerator(KeyGenerator keyGenerator)
+		{
 			mappedStatement.keyGenerator = keyGenerator;
 			return this;
 		}
 
-		public Builder keyProperty(String keyProperty) {
+		public Builder keyProperty(String keyProperty)
+		{
 			mappedStatement.keyProperty = keyProperty;
 			return this;
 		}
 
-		public MappedStatement build() {
+		public MappedStatement build()
+		{
 			assert mappedStatement.configuration != null;
 			assert mappedStatement.id != null;
 			assert mappedStatement.sqlSource != null;
@@ -131,95 +141,108 @@ public class MappedStatement {
 
 	}
 
-	public String getKeyProperty() {
+	public String getKeyProperty()
+	{
 		return keyProperty;
 	}
 
-	public KeyGenerator getKeyGenerator() {
+	public KeyGenerator getKeyGenerator()
+	{
 		return keyGenerator;
 	}
 
-	public SqlCommandType getSqlCommandType() {
+	public SqlCommandType getSqlCommandType()
+	{
 		return sqlCommandType;
 	}
 
-	public String getResource() {
+	public String getResource()
+	{
 		return resource;
 	}
 
-	public Configuration getConfiguration() {
+	public Configuration getConfiguration()
+	{
 		return configuration;
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return id;
 	}
 
-	public boolean hasNestedResultMaps() {
+	public boolean hasNestedResultMaps()
+	{
 		return hasNestedResultMaps;
 	}
 
-	public Integer getFetchSize() {
+	public Integer getFetchSize()
+	{
 		return fetchSize;
 	}
 
-	public Integer getTimeout() {
+	public Integer getTimeout()
+	{
 		return timeout;
 	}
 
-	public StatementType getStatementType() {
+	public StatementType getStatementType()
+	{
 		return statementType;
 	}
 
-	public ResultSetType getResultSetType() {
+	public ResultSetType getResultSetType()
+	{
 		return resultSetType;
 	}
 
-	public SqlSource getSqlSource() {
+	public SqlSource getSqlSource()
+	{
 		return sqlSource;
 	}
 
-	public ParameterMap getParameterMap() {
+	public ParameterMap getParameterMap()
+	{
 		return parameterMap;
 	}
 
-	public List<ResultMap> getResultMaps() {
+	public List<ResultMap> getResultMaps()
+	{
 		return resultMaps;
 	}
 
-	// public Cache getCache()
-	// {
-	// return cache;
-	// }
-
-	public boolean isFlushCacheRequired() {
+	public boolean isFlushCacheRequired()
+	{
 		return flushCacheRequired;
 	}
 
-	public boolean isUseCache() {
+	public boolean isUseCache()
+	{
 		return useCache;
 	}
 
-	public BoundSql getBoundSql(Object parameterObject) {
+	public BoundSql getBoundSql(Object parameterObject)
+	{
 		BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-		if (parameterMappings == null || parameterMappings.size() <= 0) {
+		if (parameterMappings == null || parameterMappings.size() <= 0)
+		{
 			boundSql = new BoundSql(configuration, boundSql.getSql(), parameterMap.getParameterMappings(),
 					parameterObject);
 		}
-
 		// check for nested result maps in parameter mappings (issue #30)
-		for (ParameterMapping pm : boundSql.getParameterMappings()) {
+		for (ParameterMapping pm : boundSql.getParameterMappings())
+		{
 			String rmId = pm.getResultMapId();
-			if (rmId != null) {
+			if (rmId != null)
+			{
 				ResultMap rm = configuration.getResultMap(rmId);
-				if (rm != null) {
+				if (rm != null)
+				{
 					hasNestedResultMaps |= rm.hasNestedResultMaps();
 				}
 			}
 		}
-
 		return boundSql;
 	}
-
 }
