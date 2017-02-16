@@ -38,12 +38,10 @@ public class XMLMapperBuilder extends BaseBuilder
 
 	public void parse()
 	{
-		{
-			XNode context = parser.evalNode("/mapper");
-			typeAliasesElement(context.evalNode("typeAliases"));
-			configurationElement(context);
-			//bindMapperForNamespace();
-		}
+		XNode context = parser.evalNode("/mapper");
+		typeAliasesElement(context.evalNode("typeAliases"));
+		configurationElement(context);
+		//bindMapperForNamespace();
 	}
 
 	public XNode getSqlFragment(String refid)

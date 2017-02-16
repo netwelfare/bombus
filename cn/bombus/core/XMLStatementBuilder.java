@@ -48,46 +48,21 @@ public class XMLStatementBuilder extends BaseBuilder
 		Integer fetchSize = null;
 		Integer timeout = null;
 		String parameterMap = null;
-		String parameterType = context.getStringAttribute("parameterType");
-		Class<?> parameterTypeClass = resolveClass(parameterType);
-		String resultMap = context.getStringAttribute("resultMap");
-		String resultType = context.getStringAttribute("resultType");
-
-		Class<?> resultTypeClass = resolveClass(resultType);
-		//String resultSetType = context.getStringAttribute("resultSetType");
+		Class<?> parameterTypeClass = null;
+		String resultMap = null;
+		Class<?> resultTypeClass = null;
 		StatementType statementType = StatementType
 				.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
 		ResultSetType resultSetTypeEnum = null;
-
 		List<SqlNode> contents = parseDynamicTags(context);
-
 		MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
 		SqlSource sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
 		String nodeName = context.getNode().getNodeName();
 		SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
-		//boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 		boolean flushCache = false;
 		boolean useCache = false;
-
 		String keyProperty = null;
 		KeyGenerator keyGenerator = new NoKeyGenerator();
-		// String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
-		// keyStatementId =
-		// builderAssistant.applyCurrentNamespace(keyStatementId);
-		// if (configuration.hasKeyGenerator(keyStatementId))
-		// {
-		// keyGenerator = configuration.getKeyGenerator(keyStatementId);
-		// }
-		// else
-		// {
-		// keyGenerator = context.getBooleanAttribute("useGeneratedKeys",
-		// configuration.isUseGeneratedKeys() &&
-		// SqlCommandType.INSERT.equals(sqlCommandType))
-		// ? new Jdbc3KeyGenerator(context.getStringAttribute("keyColumn",
-		// null))
-		// : new NoKeyGenerator();
-		// }
-
 		builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType, fetchSize, timeout,
 				parameterMap, parameterTypeClass, resultMap, resultTypeClass, resultSetTypeEnum, flushCache, useCache,
 				keyGenerator, keyProperty);
