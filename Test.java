@@ -19,13 +19,13 @@ public class Test
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, NoSuchMethodException,
 			SecurityException, IllegalArgumentException, InvocationTargetException, IOException
 	{
-		String file = "conf/DataStatisUserGroup.xml";
+		String file = "conf/olap.xml";
 		InputStream inputStream = ClassLoader.getSystemResourceAsStream(file);
 		Configuration configuration = new Configuration();
 		XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, file,
 				configuration.getSqlFragments());
 		mapperParser.parse();
-		MappedStatement statement = configuration.getMappedStatement("getStatisUserGroups", false);
+		MappedStatement statement = configuration.getMappedStatement("pay_user_num", false);
 		SqlSource sql = statement.getSqlSource();
 		QueryStatisUserGroup group = new QueryStatisUserGroup();
 		group.setStatFrequency("HOUR");
@@ -37,29 +37,10 @@ public class Test
 		group.setPageNames(pageNames);
 
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("statFrequency", "HOUR");
-		map.put("hour", "where 1=1 and 'a'");
-		map.put("name", "wxf");
-		BoundSql sql2 = sql.getBoundSql(group);
+		map.put("groupby", "test");
+		BoundSql sql2 = sql.getBoundSql(map);
 		System.out.println((sql2.getSql()));
 		inputStream.close();
-
-		//	    List<String> list = new ArrayList<String>();
-		//	    list.add("wxf");
-		//	    list.add("netease");
-		//	    
-		//	    String [] array =new String[2];
-		//	    list.toArray(array);
-		//	    System.out.println(array);
-		//	    
-		//	    System.out.println(List.class.getSimpleName());
-		//	    
-		//	    Class c = Integer.class;
-		//	    Constructor con=  c.getDeclaredConstructor(String.class);
-		//	    con.setAccessible(false);
-		//	    Object o=  con.newInstance("10");
-		//	    System.out.println(o);
-
 	}
 
 }

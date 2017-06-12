@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//bombus.cn//DTD Mapper 3.0//EN" "http://bombus.cn/dtd/mapper.dtd" >
+<mapper namespace="olap">
+<!--交易用户数-->
+<select id="pay_user_num" parameterType="map">
+select ${select}
+from TRANSACTION_ANALYSIS_V t1
+join TB_REPORT_DATE_TIME_V t2
+on t1.report_date = t2.report_date
+join
+(
+SELECT ${select_join}
+from OPEN_ACCOUNT_ANALYSIS_V t3
+WHERE 
+)t3
+on t1.firm_id = t3.firm_id and t1.partner_id = t3.partner_id
+where t1.report_date between 
+group by ${groupby}
+</select>
 
-<mapper namespace="StatisUserGroup">
+
+<!--交易金额-->
+<select id="pay_money">
+
+
+</select>
+
+
+
+
+
+
 
 <sql id="userColumns"> user_group_id userGroupId</sql>
 
